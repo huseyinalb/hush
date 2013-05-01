@@ -38,7 +38,7 @@ List* tokenize(char* command)
         perror("error compiling regex");
         return list;
     }
-    while (regexec (&r, p, n_matches, m, 0)) {
+    while (!regexec (&r, p, n_matches, m, 0)) {
         // TODO you know
         char buff[MAX_BUFF];
         int finish;
@@ -88,6 +88,7 @@ void run_command(TreeNode* node)
             // TODO you know
             char * args[32];
             tnode_children_to_arr(node, args);
+            printf("starting|%s|", node->child->var);
             if (execvp(node->child->var, args) < 0) {
                 perror("EROR ULAN");
                 exit(1);
