@@ -4,7 +4,7 @@
 
 Tree* tree_create()
 {
-    Tree* tree = malloc(sizeof(tree));
+    Tree* tree = malloc(sizeof(Tree));
     tree->root = tnode_create("root", NULL);
     return tree;
 }

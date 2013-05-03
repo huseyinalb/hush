@@ -44,7 +44,6 @@ List* tokenize(char* command)
         int finish;
         finish = (int) m[1].rm_eo;
         snprintf(buff, finish+1, "%s", p);
-        //printf(":%s\n", buff);
         if (buff[0]!=' ') {
             list_add(list, strdup(buff), destroy_charp);
         }
@@ -82,8 +81,12 @@ void print_node(ListNode* node)
 
 void run_command(TreeNode* stmt)
 {
-    // TODO you know
-    int pipe_d[10];
+    int command_count = 0;
+    TreeNode* cmd_node = stmt->child;
+    // TODO? we may insert a length var to the struct
+    for (;cmd_node!=NULL;cmd_node=cmd_node->next)
+        command_count++;
+    int pipe_d[command_count];
     int i;
     for(i = 0; i < 10; i+=2){
         if(pipe(&pipe_d[i]) < 0) {
@@ -101,22 +104,21 @@ void run_command(TreeNode* stmt)
                 perror("Fork error");
                 exit(1);
             } else if (pid == 0) {
-                //printf("%s: starting\n", pipe_it->child->var);
-                //if not last command
+                //if not the last command
                 if(pipe_it->next != NULL){
                     if(dup2(pipe_d[pipe_start + 1], 1) < 0){
                         perror("dup2");
                         exit(EXIT_FAILURE);
                     }
                 }
-                //if not first command
+                //if not the first command
                 if( pipe_it != stmt->child ){
                     if(dup2(pipe_d[pipe_start - 2], 0) < 0){
                         perror("dup2");
                         exit(EXIT_FAILURE);
                     }
                 }
-                for(i = 0; i < 10; i++){
+                for(i = 0; i < command_count*2; i++){
                     close(pipe_d[i]);
                 }
                 // TODO you know
@@ -126,16 +128,15 @@ void run_command(TreeNode* stmt)
                     perror("Exec error");
                     exit(1);
                 }
-                //exit(0);
-            } else {
-                pipe_it = pipe_it->next;
-                pipe_start += 2;
             }
+            pipe_it = pipe_it->next;
+            pipe_start += 2;
         }
-        for(i = 0; i < 10; i++){
+        for(i = 0; i < command_count*2; i++){
             close(pipe_d[i]);
         }
-        while(wait(&status) != pid);
+        while(wait(&status)!= -1);
+
     }
 
 }
