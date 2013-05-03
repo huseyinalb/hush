@@ -6,7 +6,7 @@
 #include <regex.h>
 #include "datatypes/list.h"
 #include "datatypes/tree.h"
-
+#include <errno.h>
 #define MAX_BUFF 512
 
 const char* exit_str = "exit\n";
@@ -135,7 +135,7 @@ void run_command(TreeNode* stmt)
         for(i = 0; i < command_count*2; i++){
             close(pipe_d[i]);
         }
-        while(wait(&status)!= -1);
+        while((wait(&status)!= -1) || errno != ECHILD);
 
     }
 
