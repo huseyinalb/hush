@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <regex.h>
-#include "list.h"
-#include "tree.h"
+#include "datatypes/list.h"
+#include "datatypes/tree.h"
 
 #define MAX_BUFF 512
 
@@ -32,7 +32,7 @@ List* tokenize(char* command)
     const char * p = command;
     regmatch_t m[n_matches];
     regex_t r;
-    char* regex_text = "(&&| |[a-zA-Z0-9_\\.\\\\/]+)";
+    char* regex_text = "(&&| |\\||[a-zA-Z0-9_\\.\\\\/]+)";
     int status = regcomp (&r, regex_text, REG_EXTENDED|REG_NEWLINE);
     if (status != 0) {
         perror("error compiling regex");
@@ -42,7 +42,7 @@ List* tokenize(char* command)
         // TODO you know
         char buff[MAX_BUFF];
         int finish;
-        finish = (int)m[1].rm_eo;
+        finish = (int) m[1].rm_eo;
         snprintf(buff, finish+1, "%s", p);
         //printf(":%s\n", buff);
         if (buff[0]!=' ') {
@@ -59,12 +59,16 @@ struct Tree* parse_command(List* tokens)
     Tree* tree = tree_create();
     TreeNode* root = tree->root;
     TreeNode* active_parent = tnode_add_child(root, "stmt", NULL);
+    TreeNode* active_pipe_parent = tnode_add_child(active_parent, "pipe", NULL);
     ListNode* it = tokens->start;
     while (it != NULL) {
         if (!strcmp(it->var, "&&")){
             active_parent = tnode_add_child(root, "stmt", NULL);
+            active_pipe_parent = tnode_add_child(active_parent, "pipe", NULL);
+        } else if (!strcmp(it->var, "|")) {
+            active_pipe_parent = tnode_add_child(active_parent, "pipe", NULL);
         } else {
-            tnode_add_child(active_parent, strdup(it->var), destroy_charp);
+            tnode_add_child(active_pipe_parent, strdup(it->var), destroy_charp);
         }
         it = it->next;
     }
@@ -76,28 +80,64 @@ void print_node(ListNode* node)
     printf("%s ", (char*) node->var);
 }
 
-void run_command(TreeNode* node)
+void run_command(TreeNode* stmt)
 {
+    // TODO you know
+    int pipe_d[10];
+    int i;
+    for(i = 0; i < 10; i+=2){
+        if(pipe(&pipe_d[i]) < 0) {
+            perror("Couldn't Pipe");
+            exit(EXIT_FAILURE);
+        }
+    }
     pid_t  pid;
     int    status;
-    if (node->child != NULL) {
-        if ((pid = fork()) < 0) {
-            perror("EROR ULAN");
-            exit(1);
-        } else if (pid == 0) {
-            // TODO you know
-            char * args[32];
-            tnode_children_to_arr(node, args);
-            printf("starting|%s|", node->child->var);
-            if (execvp(node->child->var, args) < 0) {
-                perror("EROR ULAN");
+    if (stmt->child != NULL) {
+        TreeNode* pipe_it = stmt->child;
+        int pipe_start = 0;
+        while (pipe_it != NULL) {
+            if ((pid = fork()) < 0) {
+                perror("Fork error");
                 exit(1);
+            } else if (pid == 0) {
+                //printf("%s: starting\n", pipe_it->child->var);
+                //if not last command
+                if(pipe_it->next != NULL){
+                    if(dup2(pipe_d[pipe_start + 1], 1) < 0){
+                        perror("dup2");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+                //if not first command
+                if( pipe_it != stmt->child ){
+                    if(dup2(pipe_d[pipe_start - 2], 0) < 0){
+                        perror("dup2");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+                for(i = 0; i < 10; i++){
+                    close(pipe_d[i]);
+                }
+                // TODO you know
+                char * args[32];
+                tnode_children_to_arr(pipe_it, args);
+                if (execvp(pipe_it->child->var, args) < 0) {
+                    perror("Exec error");
+                    exit(1);
+                }
+                //exit(0);
+            } else {
+                pipe_it = pipe_it->next;
+                pipe_start += 2;
             }
-        } else {
-            while (wait(&status) != pid);
         }
-
+        for(i = 0; i < 10; i++){
+            close(pipe_d[i]);
+        }
+        while(wait(&status) != pid);
     }
+
 }
 
 int main(int argc, const char * argv[])

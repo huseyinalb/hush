@@ -1,10 +1,14 @@
-cc = gcc -g
-SRC_FILES=tree.c treenode.c list.c listnode.c main.c
-FLAGS=-g -Wall
-OBJECTS=$(SRC_FILES:%.c=%.o)
-all: $(OBJECTS)
-	$(cc) $(OBJECTS) $(FLAGS) -o hush
+cc = gcc
+SRC_FILES = main.c
+ARCHIVES = datatypes/datatypes.a
+FLAGS = -g -Wall
+OBJECTS = $(SRC_FILES:%.c=%.o)
+all: datatypes.a objects
+	$(cc) $(FLAGS) $(OBJECTS) $(ARCHIVES) -o hush
+datatypes.a:
+	make -C datatypes
 objects: $(SRC_FILES)
 	$(cc) -c $(FLAGS) $(SRC_FILES)
 clean:
-	rm *.o hush
+	make -C datatypes clean
+	rm -f *.o hush
