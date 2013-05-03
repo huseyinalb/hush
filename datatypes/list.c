@@ -3,7 +3,7 @@
 
 List* list_create()
 {
-    List* list = malloc(sizeof(list));
+    List* list = malloc(sizeof(List));
     list->start = NULL;
     list->last = NULL;
     list->len = 0;
