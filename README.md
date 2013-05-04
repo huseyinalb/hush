@@ -1,10 +1,16 @@
-==Hu Shell==
+#Hu Shell  
 
-A basic shell implementation which recognizes commands, arguments and the && keyword
-To exit give ^d
+A basic shell implementation which recognizes commands, arguments, pipe and the && keyword  
+To exit give ^d  
 
-Example:
+###Examples  
+
     >> ls -lart
-Runs ls
+Runs ls -lart
+
     >> ls && hush
-Runs ls, runs an inner hush shell
+Runs ls, runs an inner hush shell  
+
+    >> ls -lart|wc &&ls
+Runs ls, pipes to wc, later runs ls again
+
