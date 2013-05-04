@@ -1,5 +1,5 @@
 cc = gcc
-SRC_FILES = main.c
+SRC_FILES = main.c interpreter.c parser.c
 ARCHIVES = datatypes/datatypes.a
 FLAGS = -g -Wall
 OBJECTS = $(SRC_FILES:%.c=%.o)

@@ -12,4 +12,5 @@ Runs ls -lart
 Runs ls, runs an inner hush shell  
 
     >> ls -lart|wc &&ls
-Runs ls, pipes to wc, later runs ls again
+Runs ls, pipes to wc, later runs ls again  
+
