@@ -9,6 +9,9 @@ datatypes.a:
 	make -C datatypes
 objects: $(SRC_FILES)
 	$(cc) -c $(FLAGS) $(SRC_FILES)
+test_all: CC += -DDEBUG -g
+test_all:
+	make -C datatypes test_all
 clean:
 	make -C datatypes clean
 	rm -f *.o hush
