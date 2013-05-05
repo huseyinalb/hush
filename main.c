@@ -29,7 +29,7 @@ void print_node(ListNode* node)
 int main(int argc, const char * argv[])
 {
     char command[MAX_BUFF];
-    printf("Hush v0.1\n");
+    printf("mangalsh v0.1\n");
     while (prompt(command)) {
         size_t command_len = strlen(command);
         if (command_len > 1)

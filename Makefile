@@ -4,7 +4,7 @@ ARCHIVES = datatypes/datatypes.a
 FLAGS = -g -Wall
 OBJECTS = $(SRC_FILES:%.c=%.o)
 all: datatypes.a objects
-	$(cc) $(FLAGS) $(OBJECTS) $(ARCHIVES) -o hush
+	$(cc) $(FLAGS) $(OBJECTS) $(ARCHIVES) -o mangalsh
 datatypes.a:
 	make -C datatypes
 objects: $(SRC_FILES)
