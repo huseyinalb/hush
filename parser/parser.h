@@ -12,8 +12,8 @@
 #include <regex.h>
 #include <string.h>
 
-#include "datatypes/list.h"
-#include "datatypes/tree.h"
+#include "../datatypes/list.h"
+#include "../datatypes/tree.h"
 
 List* tokenize(char*);
 struct Tree* parse_command(List*);
