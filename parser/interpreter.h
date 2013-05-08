@@ -13,7 +13,10 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "datatypes/list.h"
-#include "datatypes/tree.h"
-void run_command(TreeNode* stmt);
+#include "../datatypes/list.h"
+#include "../datatypes/tree.h"
+#include "../builtins/builtins.h"
+
+void run_command(Builtins* builtins, TreeNode* stmt);
+
 #endif
