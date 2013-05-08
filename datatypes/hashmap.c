@@ -46,15 +46,18 @@ void hashmap_add_node(HashMap* hashmap, char* key, void* value, void (*destroy_k
     hashmap->count++;
 }
 
-void hashmap_for_each(HashMap* hashmap, void (*func) (HashMapNode* node))
+int hashmap_for_each(HashMap* hashmap, void (*func) (HashMapNode* node))
 {
     int i = 0;
+    int count = 0;
     for(;i<hashmap->size;i++) {
         HashMapNode* node = hashmap->table[i];
-        if (node != NULL)
+        if (node != NULL) {
             func(node);
+            count++;
+        }
     }
-    
+    return count;
 }
 
 HashMapNode* hashmap_get(HashMap* hashmap, char* key)
@@ -65,8 +68,9 @@ HashMapNode* hashmap_get(HashMap* hashmap, char* key)
 void hashmap_destroy(HashMap* hashmap)
 {
 #ifdef DEBUG
-    printf("freeing node:%d\n", (int) hashmap);
+    printf("freeing hashmap:%d\n", (int) hashmap);
 #endif
-    hashmap_for_each(hashmap, hmnode_free);
+    int freed_count = hashmap_for_each(hashmap, hmnode_free);
+    hashmap->count -= freed_count;
     free(hashmap);
 }

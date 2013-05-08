@@ -16,8 +16,8 @@ int main()
     assert(!strcmp("trykey2", node->key));
     assert(!strcmp("tryval2", node->value));
 
-    hashmap_destroy(hashmap);
-    
     assert(hashmap->count == 2);
+    hashmap_destroy(hashmap);
+    assert(hashmap->count == 0);
     return 0;
 }
