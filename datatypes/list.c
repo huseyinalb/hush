@@ -18,12 +18,13 @@ void list_destroy(List* list)
             ListNode* tail = node;
             node = node->next;
             lnode_destroy(tail);
+            list->len--;
         } while (node!=NULL);
     }
     free(list);
 }
 
-void for_each(List* list, void (func) (ListNode*))
+void list_for_each(List* list, void (func) (ListNode*))
 {
     ListNode* it = list->start;
     while(it != NULL) {

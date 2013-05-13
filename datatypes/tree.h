@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include "treenode.h"
 
+#ifdef TEST
+#include "assert.h"
+#endif
+
 typedef struct Tree {
     TreeNode* root;
 } Tree;
