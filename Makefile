@@ -13,11 +13,11 @@ parser.a:
 	make -C parser
 objects: $(SRC_FILES)
 	$(cc) -c $(FLAGS) $(SRC_FILES)
-test_all: CC += -DDEBUG -g
+test_all: CC += -DDEBUG -DTEST -g
 test_all:
 	make -C datatypes test_all
 clean:
 	make -C datatypes clean
 	make -C builtins clean
 	make -C parser clean
-	rm -f *.o hush
+	rm -f *.o mangalsh

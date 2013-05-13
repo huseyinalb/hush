@@ -68,7 +68,7 @@ HashMapNode* hashmap_get(HashMap* hashmap, char* key)
 void hashmap_destroy(HashMap* hashmap)
 {
 #ifdef DEBUG
-    printf("freeing hashmap:%d\n", (int) hashmap);
+    printf("freeing hashmap:%ld\n", (long) hashmap);
 #endif
     int freed_count = hashmap_for_each(hashmap, hmnode_free);
     hashmap->count -= freed_count;

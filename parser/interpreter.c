@@ -68,7 +68,6 @@ void run_command(Builtins* builtins, TreeNode* stmt)
                         perror("Exec error");
                         exit(1);
                     }
-                    exit(0);
                 }
             }
             pipe_it = pipe_it->next;
@@ -76,12 +75,11 @@ void run_command(Builtins* builtins, TreeNode* stmt)
         }
         if (!pipe_exclusion) {
             int i;
-            for(i = 0; i < command_count*2; i+=2){
+            for(i = 0; i < command_count*2; i++){
                 close(pipe_d[i]);
             }
             while((wait(&status)!= -1) || errno != ECHILD);
         }
-        
     }
     
 }

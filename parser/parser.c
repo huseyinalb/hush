@@ -15,7 +15,6 @@ List* tokenize(char* command)
         return list;
     }
     while (!regexec (&r, p, n_matches, m, 0)) {
-        // TODO you know
         char buff[PARSER_MAX_BUFF];
         int finish;
         finish = (int) m[1].rm_eo;
