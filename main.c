@@ -40,7 +40,7 @@ int main(int argc, const char * argv[])
         struct Tree* tree = parse_command(list);
         list_destroy(list);
         
-        //for_each(list, print_node);
+        //list_for_each(list, print_node);
         TreeNode* it = tree->root->child;
         while (it != NULL) {
             run_command(builtins, it);

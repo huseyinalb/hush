@@ -1,6 +1,5 @@
 
 #include "tree.h"
-#include "treenode.h"
 
 Tree* tree_create()
 {
@@ -12,6 +11,10 @@ Tree* tree_create()
 void tree_destroy(Tree* tree)
 {
     tnode_destroy(tree->root);
+#ifdef TEST
+    assert(treenode_test_ptrchecks[*treenode_test_index] == tree);
+    (*treenode_test_index)++;
+#endif
     free(tree);
 }
 

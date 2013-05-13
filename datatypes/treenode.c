@@ -1,6 +1,14 @@
 
 #include "treenode.h"
 
+#ifdef TEST
+void tnode_set_ptrchecks(int* index, void** ptrchecks)
+{
+    treenode_test_index = index;
+    treenode_test_ptrchecks = ptrchecks;
+}
+#endif
+
 TreeNode* tnode_create(void * var, void (*destroy_var) (void *))
 {
     TreeNode* node = malloc(sizeof(TreeNode));
@@ -24,6 +32,12 @@ void depth_first_for_each(TreeNode* node, void func(TreeNode*))
         depth_first_for_each(node->child, func);
     if (node->next != NULL)
         depth_first_for_each(node->next, func);
+#ifdef TEST
+    printf("node:%s\n",node->var);
+    printf("node:%s\n",((TreeNode*)treenode_test_ptrchecks[*treenode_test_index])->var);
+    assert(treenode_test_ptrchecks[*treenode_test_index] == node);
+    (*treenode_test_index)++;
+#endif
     func(node);
 }
 
